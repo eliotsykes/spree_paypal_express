@@ -1,0 +1,45 @@
+<% @body_id = 'cart' %>
+<script type="text/javascript" charset="utf-8">
+	//On page load
+	$(function() {
+		$(".paypal_submit").click(function(){
+			$(this).hide();
+		});
+	});
+</script>
+<div class="cart">
+<h1><%= t("shopping_cart")%></h1>
+<h2 class="paypal">Please Confirm Your Payment Details</h2>
+<table id="paypal">
+	<tr align="left">
+		<td align="left">
+   	  <p><span>Name:</span> <%= @address['name'] %></p>
+		  <p><span>Company:</span> <%= @address['company'] %></p>
+		  <p><span>Address 1:</span> <%= @address['address1'] %></p>
+		  <p><span>Address 2:</span> <%= @address['address2'] %></p>
+		  <p><span>City:</span> <%= @address['city'] %></p>
+		  <p><span>State:</span> <%= @address['state'] %> </p>
+		  <p><span>Country:</span> <%= @address['country'] %></p>
+		  <p><span>Zip:</span> <%= @address['zip'] %></p>
+	 </td>
+  </tr>
+	<tr>
+		<td align="left">
+			<h2 class="paypal">Shipping Options</h2>
+			
+			<%#= debug(@order.shipping_methods) %>
+			<% form_tag complete_order_url(@order,:token => params[:token], :payer_id => params[:PayerID], :checkout_complete => 'yes') do %>	
+			<% @rates.each_with_index do |ship_method, index| %>
+				<% checked = index == 0 ? true : false %>
+				<%= radio_button_tag 'method_id', ship_method[:id], checked, :class => "shipping_input" %> <label for="method_id_<%= ship_method[:id] %>"><%= ship_method[:name] %> 
+			  <%= number_to_currency(ship_method[:rate]) %></label>	<br />
+			<% end %>
+			
+			
+				<br /><br />
+			  <%= submit_tag 'Confirm Payment', :disabled => false, :class => 'paypal_submit' %>
+			<% end %>
+		</td>
+	</tr>
+</table>
+</div>
